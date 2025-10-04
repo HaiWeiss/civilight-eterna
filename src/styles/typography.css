@@ -1,0 +1,35 @@
+/* EBGaramond font */
+@font-face {
+    font-family: "EBGaramond";
+    src: url("../assets/fonts/EBGaramond.ttf");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* EBGaramond italic*/
+@font-face {
+    font-family: "EBGaramond-Italic";
+    src: url("../assets/fonts/EBGaramond-Italic.ttf");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* EBGaramond italic*/
+@font-face {
+    font-family: "EBGaramond-Italic";
+    src: url("../assets/fonts/EBGaramond-Italic.ttf");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* EBGaramond italic*/
+@font-face {
+    font-family: "Akrobat";
+    src: url("../assets/fonts/Akrobat-Bold.otf") format("opentype");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}

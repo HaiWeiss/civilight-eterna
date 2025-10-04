@@ -1,0 +1,99 @@
+---
+import { Image } from "astro:assets";
+import {
+    SOCIAL_LINKS as socialLinks,
+    NAV_LINKS as navLinks,
+} from "@/config/nav.config";
+
+import theressaGif from "@/assets/images/theresa-arknights.gif";
+import "@/styles/global.css";
+---
+
+<nav
+    id="navbar"
+    class="fixed top-5 left-1/2 -translate-x-1/2 z-50
+         bg-black/90 text-white flex items-center justify-between
+         px-2 rounded-full backdrop-blur-md shadow-lg/40 shadow-black/40
+         py-2 max-w-3xl w-[600px] transition-all duration-300"
+>
+    <!-- Logo -->
+    <div
+        class="flex items-center justify-center min-w-[40px] min-h-[40px] rounded-full bg-white shadow-sm mr-2"
+    >
+        <Image src={theressaGif} alt="Logo" class="w-10 h-10 rounded-full" />
+    </div>
+
+    <!-- Redes -->
+    <div
+        id="nav-content"
+        class="flex-1 flex items-center justify-center transition-all duration-300"
+    >
+        <!-- Links -->
+        <ul id="nav-links" class="flex flex-row items-center gap-8">
+            {
+                navLinks.map((link) => (
+                    <li>
+                        <a
+                            href={link.href}
+                            class="text-[var(--color-primary)] hover:text-[var(--color-secondary)] text-base font-medium px-2 py-1"
+                        >
+                            • {link.label} •
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+
+        <!-- Redes sociales -->
+        <div id="nav-socials" class="hidden flex items-center gap-6">
+            {
+                socialLinks.map((social) => (
+                    <a
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-[var(--color-primary)] hover:text-[var(--color-secondary)] flex items-center transition-colors"
+                        title={social.label}
+                    >
+                        <social.icon class="w-6 h-6 fill-current" />
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+
+    <!-- Toggle -->
+    <button
+        id="toggle-socials"
+        class="ml-2 w-10 h-10 rounded-full flex items-center justify-center
+           bg-[var(--color-primary)] shadow-sm hover:bg-[var(--color-secondary)] transition-colors text-zinc-950"
+    >
+        ☰
+    </button>
+</nav>
+
+<script type="module">
+    const toggleBtn = document.getElementById("toggle-socials");
+    const nav = document.getElementById("navbar");
+    const links = document.getElementById("nav-links");
+    const socials = document.getElementById("nav-socials");
+
+    toggleBtn.addEventListener("click", () => {
+        const showingSocials = !socials.classList.contains("hidden");
+
+        if (showingSocials) {
+            socials.classList.add("hidden");
+            nav.classList.remove("w-[300px]");
+            nav.classList.add("w-[600px]");
+            setTimeout(() => {
+                socials.classList.add("hidden");
+                links.classList.remove("hidden");
+            }, 200);
+        } else {
+            socials.classList.remove("hidden");
+            links.classList.add("hidden");
+            nav.classList.remove("w-[600px]");
+            nav.classList.add("w-[300px]");
+        }
+    });
+</script>

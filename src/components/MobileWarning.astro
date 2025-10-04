@@ -1,0 +1,31 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+    image: any;
+}
+
+const { image } = Astro.props;
+---
+
+<div
+    class="mobile-warning z-[999] inset-0 flex-col items-center justify-center p-8 fixed bg-white"
+>
+    <Image src={image} alt="Mobile not supported" class="w-32 h-32 mb-4" />
+    <p class="text-lg font-semibold text-center text-zinc-950">
+        El diseño para celulares aún no está terminado. Te recomiendo ingresar
+        desde una computadora o tablet.
+    </p>
+</div>
+
+<style>
+    .mobile-warning {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-warning {
+            display: flex;
+        }
+    }
+</style>

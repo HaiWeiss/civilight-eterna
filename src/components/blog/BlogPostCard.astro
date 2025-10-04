@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+
+// Props
+const { post } = Astro.props;
+---
+
+<article
+    class="rounded-3xl bg-gradient-to-b from-neutral-900 to-black p-5 shadow-xl transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl"
+>
+    <h1></h1>
+    <a href={`/blog/${post.id}/`} class="block space-y-4">
+        {
+            post.data.heroImage && (
+                <div class="flex items-baseline text-gray-400">
+                    <p class="flex items-baseline date-number">
+                        <span class="text-3xl font-bold text-white">
+                            {new Date(post.data.pubDate).getDate()}
+                        </span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 8 12"
+                            class="block w-2 text-gray-500"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-width="1.5"
+                                d="m6.5 1-5 10"
+                            />
+                        </svg>
+                        <span class="text-lg font-semibold text-gray-300">
+                            {new Date(post.data.pubDate).getMonth() + 1}
+                        </span>
+                    </p>
+                    <span class="mx-2 text-gray-600">•</span>
+                    <span class="text-gray-400">Hai Weiss</span>
+                </div>
+            )
+        }
+        {
+            post.data.heroImage && (
+                <Image
+                    class="rounded-2xl object-cover aspect-video border border-neutral-800"
+                    width={720}
+                    height={360}
+                    src={post.data.heroImage}
+                    alt="Milanesa"
+                />
+            )
+        }
+        <h4 class="text-2xl font-semibold text-white mb-1 tracking-tight">
+            {post.data.title}
+        </h4>
+        {
+            post.data.description && (
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    {post.data.description}
+                </p>
+            )
+        }
+        {
+            post.data.tags && post.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {post.data.tags.map((tag: any) => (
+                        <span class="text-xs text-gray-300 bg-neutral-800 px-2 py-0.5 rounded-full border border-neutral-700">
+                            #{tag}
+                        </span>
+                    ))}
+                </div>
+            )
+        }
+    </a>
+</article>

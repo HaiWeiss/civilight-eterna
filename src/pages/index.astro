@@ -1,0 +1,47 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION } from "../config/site.config";
+import { Image } from "astro:assets";
+import Navbar from "@/components/ui/Navbar.astro";
+import Footer from "@/components/ui/Footer.astro";
+import Layout from "@/layouts/Layout.astro";
+import NavButton from "@/components/ui/NavButton.astro";
+
+import theresa from "@/assets/images/theresa.jpg";
+---
+
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+    <Navbar slot="navbar" />
+
+    <main class="h-dvh w-full grid md:grid-cols-2 overflow-hidden">
+        <!-- Texto -->
+        <section
+            class="flex flex-col justify-center items-center md:items-start px-10 relative z-10"
+        >
+            <h1 class="text-4xl font-bold text-black mb-4">
+                &gt; Bienvenido a la Página de <span
+                    class="text-[var(--color-secondary)]">Hai</span
+                ><span class="animate-blink">_</span>
+            </h1>
+            <p class="text-gray-600 mb-6 max-w-md">
+                De momento mi página esta en proceso, sientete libre de
+                explorarla
+            </p>
+            <NavButton name="Ir a blog" href="/blog" active="true" />
+        </section>
+
+        <!-- Imagen diagonal -->
+        <section class="relative h-dvh w-full">
+            <div
+                class="absolute inset-0 -skew-x-6 origin-bottom-left overflow-hidden"
+            >
+                <Image
+                    src={theresa}
+                    alt="Theresa"
+                    class="h-full w-full object-cover skew-x-6 scale-110"
+                />
+            </div>
+        </section>
+    </main>
+
+    <Footer slot="footer" />
+</Layout>

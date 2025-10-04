@@ -1,0 +1,38 @@
+---
+const { allTags, activeTag } = Astro.props;
+
+const baseClass = `
+  px-4 py-1
+  rounded-2xl border border-white/25 backdrop-blur-xs
+  transition-all duration-300 cursor-pointer
+  outline-none
+  hover:border-white/50 hover:scale-105
+`;
+---
+
+<div class="max-w-7xl mx-auto px-2 sm:px-4 pt-4 sm:pt-6 pb-2">
+  <div
+    class="
+      bg-white py-2 px-1 rounded-4xl
+      flex flex-nowrap sm:flex-wrap gap-2 sm:gap-3
+      overflow-x-auto
+      scrollbar-thin scrollbar-thumb-zinc-300
+    "
+  >
+    <a
+      href="/blog"
+      class={`${baseClass} ${!activeTag ? 'bg-zinc-950/80 text-white' : 'bg-white text-black '}`}
+    >
+      Todos
+    </a>
+
+    {allTags.map((tag: string) => (
+      <a
+        href={`/blog/tag/${tag}`}
+        class={`${baseClass} ${activeTag === tag ? 'bg-zinc-950/80 text-white' : 'bg-white text-black '}`}
+      >
+        #{tag}
+      </a>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,14 @@
+---
+import { getCollection } from "astro:content";
+import BlogPage from "@/components/blog/BlogPage.astro";
+
+const posts = (await getCollection("blog")).sort(
+    (a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const allTags = Array.from(
+    new Set(posts.flatMap((post: any) => post.data.tags || [])),
+).sort();
+---
+
+<BlogPage posts={posts} allTags={allTags} activeTag={null} />

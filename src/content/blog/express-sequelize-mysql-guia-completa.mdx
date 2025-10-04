@@ -1,0 +1,302 @@
+---
+title: "Servidor de Express con Sequelize"
+description: "Guía paso a paso para construir una API profesional con Express, Sequelize y MySQL2"
+pubDate: "Jun 10 2024"
+heroImage: "@/assets/images/blog-placeholder-min.jpg"
+tags: ["express", "sequelize", "mysql", "api", "nodejs"]
+---
+
+> ⚠️ Esta guía cubre desde cero la configuración de un backend profesional usando Express y Sequelize con MySQL. Se asume que tenés Node.js y MySQL instalados en tu sistema.
+
+---
+
+## 1. Crear el proyecto e instalar dependencias
+
+```bash
+mkdir nombre-app
+cd nombre-app
+npm init -y
+npm install express sequelize mysql2 dotenv
+```
+
+### Configurar `package.json`
+
+```json
+{
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  }
+}
+```
+
+### Crear archivo `.gitignore`
+
+```gitignore
+/node_modules
+.env
+```
+
+✅ **Commit sugerido:** `proyecto base con dependencias y estructura inicial`
+
+---
+
+## 2. Estructura inicial sugerida
+
+```
+nombre-app/
+├── src/
+│   ├── config/
+│   │   └── database.js
+│   ├── models/
+│   │   └── character.js
+│   ├── controllers/
+│   │   └── character.controller.js
+│   ├── routes/
+│   │   └── character.route.js
+│   └── index.js
+├── .env
+├── .env.example
+├── .gitignore
+└── package.json
+```
+
+> ℹ️ **Tip:** Si tu profesor o cliente requiere otra estructura, priorizá esa.
+
+---
+
+## 3. Configurar `.env`
+
+Crea un archivo `.env` con:
+
+```env
+DB_NAME=nombre_base
+DB_USER=root
+DB_PASSWORD=
+DB_HOST=localhost
+PORT=4000
+```
+
+Copia estos valores a `.env.example` (sin contraseñas reales).
+
+> 💡 **Tip:** Jamás subas tu `.env` al repo. Usá `.env.example` para compartir formato.
+
+✅ **Commit sugerido:** `configuracion de variables de entorno`
+
+---
+
+## 4. Conexión a la base de datos
+
+En `src/config/database.js`:
+
+```js
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+dotenv.config();
+
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: 'mysql',
+  }
+);
+
+export const initDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Conectado a MySQL correctamente.");
+    await sequelize.sync();
+  } catch (err) {
+    console.error("❌ Error al conectar a la base de datos:", err);
+  }
+};
+```
+
+✅ **Commit sugerido:** `conexion con Sequelize configurada`
+
+---
+
+## 5. Modelo `Character`
+
+En `src/models/character.js`:
+
+```js
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.js';
+
+const Character = sequelize.define('Character', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    allowNull: false,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  ki: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  race: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  gender: {
+    type: DataTypes.ENUM('Male', 'Female'),
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+});
+
+export default Character;
+```
+
+✅ **Commit sugerido:** `modelo Character definido con validaciones`
+
+---
+
+## 6. Controlador con validaciones personalizadas
+
+En `src/controllers/character.controller.js`:
+
+```js
+import Character from '../models/character.js';
+
+export const createCharacter = async (req, res) => {
+  const { name, ki, race, gender, description } = req.body;
+  const errores = [];
+
+  if (!name || !ki || !race || !gender) {
+    errores.push("Todos los campos obligatorios deben estar completos (name, ki, race, gender).");
+  }
+
+  if (!Number.isInteger(ki)) {
+    errores.push("El campo 'ki' debe ser un número entero.");
+  }
+
+  if (!['Male', 'Female'].includes(gender)) {
+    errores.push("El campo 'gender' solo puede ser 'Male' o 'Female'.");
+  }
+
+  if (description && typeof description !== 'string') {
+    errores.push("La descripción debe ser una cadena de texto.");
+  }
+
+  const existe = await Character.findOne({ where: { name } });
+  if (existe) errores.push("Ya existe un personaje con ese nombre.");
+
+  if (errores.length > 0) {
+    return res.status(400).json({ errores });
+  }
+
+  try {
+    const character = await Character.create({ name, ki, race, gender, description });
+    res.status(201).json(character);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al crear el personaje', detalle: err.message });
+  }
+};
+
+// Agregar luego: getAll, getById, update, delete con validaciones similares
+```
+
+✅ **Commit sugerido:** `controlador de character con validaciones completas`
+
+---
+
+## 7. Rutas
+
+En `src/routes/character.route.js`:
+
+```js
+import { Router } from 'express';
+import {
+  createCharacter,
+  getAllCharacters,
+  getCharacterById,
+  updateCharacter,
+  deleteCharacter,
+} from '../controllers/character.controller.js';
+
+const router = Router();
+
+router.post('/characters', createCharacter);
+router.get('/characters', getAllCharacters);
+router.get('/characters/:id', getCharacterById);
+router.put('/characters/:id', updateCharacter);
+router.delete('/characters/:id', deleteCharacter);
+
+export default router;
+```
+
+✅ **Commit sugerido:** `rutas para character definidas`
+
+---
+
+## 8. Inicializar servidor
+
+En `src/index.js`:
+
+```js
+import express from 'express';
+import dotenv from 'dotenv';
+import { initDB } from './config/database.js';
+import characterRoutes from './routes/character.route.js';
+
+dotenv.config();
+const app = express();
+
+app.use(express.json());
+app.use('/api', characterRoutes);
+
+app.get('/', (req, res) => {
+  res.send('API funcionando');
+});
+
+const PORT = process.env.PORT || 4000;
+
+initDB()
+
+app.listen(PORT, () => {
+  console.log(`Servidor en http://localhost:${PORT}`);
+});
+```
+
+✅ **Commit sugerido:** `servidor Express configurado`
+
+---
+
+## 9. Probar todo
+
+```bash
+npm run dev
+```
+
+Si todo va bien, deberías ver:
+
+```bash
+✅ Conectado a MySQL correctamente.
+Servidor en http://localhost:4000
+```
+
+> 💡 **Tip:** Probá tus endpoints con [Thunder Client](https://www.thunderclient.com/) o Postman.
+
+---
+
+## Mensaje final
+
+Gracias por leer esta guía. Fue escrita para que vos y tus compañeros puedan aprender sin trabarse. Si querés más contenido así, seguime en GitHub como [Thunder Client](https://www.thunderclient.com/).
+
+✅ **Bonus:** Si querés seguir aprendiendo, podés agregar relaciones entre modelos, autenticación con JWT o probar migraciones con Sequelize CLI.
+
+🌟 ¡Mucho éxito en tu desarrollo como dev!

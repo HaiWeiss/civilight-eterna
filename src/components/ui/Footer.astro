@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import theresaLurk from "@/assets/images/theresa-lurk.png";
+
+const today = new Date();
+---
+
+<footer class="static backdrop-blur-md text-white text-sm h-18">
+    <div
+        class="absolute bottom-0 h-18 w-full bg-zinc-950 flex flex-col items-center justify-center space-y-2 z-10"
+    >
+        <p class="opacity-80">&copy; {today.getFullYear()} Hai Weiss</p>
+    </div>
+    <Image
+        class="absolute -top-6 -right-0 w-26 z-0 hover:-top-14 duration-300 ease-in-out"
+        src={theresaLurk}
+        alt="theresa espiandote"
+    />
+</footer>
+
+<script type="module"></script>

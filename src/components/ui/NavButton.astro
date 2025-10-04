@@ -1,0 +1,15 @@
+---
+const { name, href, className = "" } = Astro.props;
+
+const baseClass = `
+  px-4 py-1
+  rounded-2xl
+  bg-zinc-950
+  hover:text-[var(--color-secondary)]
+  transition-all duration-300 shadow-lg cursor-pointer
+`;
+---
+
+<a class={`${baseClass} ${className}`} href={href}>
+    {name}
+</a>

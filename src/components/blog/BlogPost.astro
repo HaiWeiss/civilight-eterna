@@ -1,0 +1,69 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Navbar from "@/components/ui/Navbar.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { Image } from "astro:assets";
+import Footer from "@/components/ui/Footer.astro";
+
+import "@/styles/blog.css";
+
+type Props = CollectionEntry<"blog">["data"];
+const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+---
+
+<Layout title={title} description={description} image={heroImage}>
+    <Navbar slot="navbar" />
+
+    <main id="blog">
+        <div class="mt-18 bg-zinc-950 p-8 rounded-2xl shadow-lg">
+            <header class="flex flex-col w-full">
+                <div
+                    class="relative flex flex-col justify-end gap-2 w-full mb-4 h-80 object-shadow image-scale overflow-hidden rounded-xl"
+                >
+                    {
+                        heroImage && (
+                            <Image
+                                class="absolute w-full object-cover object-center rounded-xl select-none"
+                                src={heroImage}
+                                alt={title}
+                            />
+                        )
+                    }
+
+                    <div
+                        class="absolute left-0 bottom-0 z-10 w-full min-h-32 bg-gradient-to-t from-black to-transparent rounded-xl"
+                    >
+                    </div>
+
+                    <div
+                        class="z-10 flex flex-col justify-end min-h-24 text-white p-4"
+                    >
+                        <h1 class="text-3xl sm:text-4xl font-semibold">
+                            {title}
+                        </h1>
+                        <p class="text-sm text-white opacity-75 mt-1">
+                            <FormattedDate date={pubDate} />
+                            {
+                                updatedDate && (
+                                    <span class="ml-2 italic opacity-60">
+                                        (Updated{" "}
+                                        <FormattedDate date={updatedDate} />)
+                                    </span>
+                                )
+                            }
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <article id="blog-content">
+                <p class="text-md text-zinc-400 mb-2">{description}</p>
+                <hr class="my-4 border-slate-300" />
+                <slot />
+            </article>
+        </div>
+    </main>
+
+    <Footer slot="footer" />
+</Layout>

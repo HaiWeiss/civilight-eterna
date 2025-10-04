@@ -1,0 +1,37 @@
+---
+import BaseHead from "@/components/shared/BaseHead.astro";
+import MobileWarning from "@/components/MobileWarning.astro";
+import theresaLove from "@/assets/images/theresa-love.png";
+
+// Props
+const {
+    title = "Mi Sitio Web",
+    description = "Descripción de mi sitio web",
+    image,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={title} description={description} image={image} />
+    </head>
+
+    <body class="bg-zinc-900 text-white min-h-screen flex flex-col">
+        <MobileWarning image={theresaLove} />
+
+        <!-- Navbar -->
+        <slot name="navbar" />
+
+        <!-- Main content -->
+        <main class="flex-1 w-full flex flex-col items-center justify-start">
+            <slot />
+        </main>
+
+        <!-- Footer -->
+        <slot name="footer" />
+
+        <!-- Scripts opcionales -->
+        <slot name="scripts" />
+    </body>
+</html>
